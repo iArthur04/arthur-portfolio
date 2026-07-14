@@ -12,6 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
+
+    <!-- New Component Styles -->
+    <link rel="stylesheet" href="css/components/github-stats.css">
+    <link rel="stylesheet" href="css/components/ai-quotes.css">
+    <link rel="stylesheet" href="css/components/contact-form.css">
+    
+    <!-- Make sure to use module type for JavaScript -->
+    <script type="module" src="script.js"></script>
 </head>
 <body>
     <!-- NAVIGATION -->
@@ -95,6 +103,47 @@
             </div>
         </div>
     </section>
+
+    <!-- Add after your hero section -->
+
+<!-- GITHUB STATS SECTION -->
+<section id="github" class="section github-section">
+    <div class="section-container">
+        <h2 class="section-title">
+            <i class="fab fa-github"></i> My GitHub Activity
+        </h2>
+        <p class="section-subtitle">
+            Real-time stats from my coding journey
+        </p>
+        <div id="githubStatsContainer" class="github-stats-container"></div>
+    </div>
+</section>
+
+<!-- AI QUOTE SECTION -->
+<section id="ai-quote" class="section ai-quote-section">
+    <div class="section-container">
+        <h2 class="section-title">
+            <i class="fas fa-brain"></i> AI-Generated Wisdom
+        </h2>
+        <p class="section-subtitle">
+            Daily insights to keep you inspired
+        </p>
+        <div id="aiQuoteContainer"></div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="section contact-section">
+    <div class="section-container">
+        <h2 class="section-title">
+            <i class="fas fa-paper-plane"></i> Let's Connect
+        </h2>
+        <p class="section-subtitle">
+            Have a project in mind? Let's build something amazing together.
+        </p>
+        <div id="contactFormContainer"></div>
+    </div>
+</section>
 
     <!-- We'll add more sections on Day 3! -->
     <script src="script.js"></script>
