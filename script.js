@@ -3,6 +3,93 @@ import GitHubStats from './js/components/github-stats.js';
 import AIQuoteGenerator from './js/components/ai-quotes.js';
 import SmartContactForm from './js/components/contact-form.js';
 
+// TYPING ANIMATION
+class TypeWriter {
+    constructor(element, words, speed = 100, delay = 2000) {
+        this.element = element;
+        this.words = words;
+        this.speed = speed;
+        this.delay = delay;
+        this.wordIndex = 0;
+        this.charIndex = 0;
+        this.isDeleting = false;
+        this.timer = null;
+    }
+
+    type() {
+        const currentWord = this.words[this.wordIndex];
+        const isComplete = this.charIndex === currentWord.length;
+
+        if (this.isDeleting) {
+            // Deleting text
+            this.element.textContent = currentWord.substring(0, this.charIndex - 1);
+            this.charIndex--;
+        } else {
+            // Typing text
+            this.element.textContent = currentWord.substring(0, this.charIndex + 1);
+            this.charIndex++;
+        }
+
+        // Determine next action
+        let typeSpeed = this.speed;
+
+        if (!this.isDeleting && this.charIndex === currentWord.length) {
+            // Word complete - pause
+            typeSpeed = this.delay;
+            this.isDeleting = true;
+        } else if (this.isDeleting && this.charIndex === 0) {
+            // Word deleted - move to next
+            this.isDeleting = false;
+            this.wordIndex = (this.wordIndex + 1) % this.words.length;
+            typeSpeed = 500; // Pause before typing next word
+        }
+
+        this.timer = setTimeout(() => this.type(), typeSpeed);
+    }
+
+    start() {
+        this.type();
+    }
+
+    stop() {
+        clearTimeout(this.timer);
+    }
+}
+
+// Initialize Typing Animation
+document.addEventListener('DOMContentLoaded', () => {
+    const typedElement = document.getElementById('typed-text');
+    if (typedElement) {
+        const words = [
+            'Building AI for the Future',
+            'Creating with Code',
+            'Learning Every Day',
+            'Dreaming Big',
+            'Making AI Accessible'
+        ];
+        
+        const typeWriter = new TypeWriter(typedElement, words, 100, 2000);
+        typeWriter.start();
+    }
+
+    // Fade-in animations for sections
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    fadeElements.forEach(element => {
+        observer.observe(element);
+    });
+
+    // ... rest of your existing code
+});
+
 // Initialize components when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     // 1. GitHub Stats
@@ -81,3 +168,14 @@ if ('performance' in window) {
         console.log('⚡ Performance:', perfData);
     }
 }
+
+// In script.js
+document.addEventListener('DOMContentLoaded', () => {
+    // Update footer with current date
+    const lastUpdated = document.getElementById('lastUpdated');
+    if (lastUpdated) {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        lastUpdated.textContent = now.toLocaleDateString('en-US', options);
+    }
+});
