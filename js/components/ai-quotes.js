@@ -10,8 +10,13 @@ class AIQuoteGenerator {
             { text: "Your limitation—it's only your imagination.", author: "Unknown" },
             { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
             { text: "Great things never come from comfort zones.", author: "Unknown" },
-            { text: "Dream big. Work hard. Stay focused.", author: "Unknown" }
-        ];
+            { text: "Dream big. Work hard. Stay focused.", author: "Unknown" },
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
+            { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
+            { text: "The future is already here — it's just not very evenly distributed.", author: "William Gibson" },
+            { text: "Artificial intelligence is the new electricity.", author: "Andrew Ng" }
+                ];
         console.log('📚 Quotes loaded:', this.quotes.length);
     }
 
