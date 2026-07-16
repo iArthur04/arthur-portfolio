@@ -1,85 +1,46 @@
-// AI Quote Generator - Uses OpenAI to generate motivational quotes
+// AI Quote Generator - Debug Version
 class AIQuoteGenerator {
     constructor() {
-        this.apiEndpoint = 'https://api.openai.com/v1/chat/completions';
-        this.cache = new Map();
-        this.cacheDuration = 10 * 60 * 1000; // 10 minutes
+        console.log('🔧 AIQuoteGenerator constructor called');
         this.quotes = [
-            "The best way to predict the future is to build it.",
-            "Every expert was once a beginner.",
-            "Code is poetry in motion.",
-            "AI is the new electricity.",
-            "Your limitation—it's only your imagination.",
-            "Push yourself, because no one else is going to do it for you.",
-            "Great things never come from comfort zones.",
-            "Dream big. Work hard. Stay focused."
+            { text: "The best way to predict the future is to build it.", author: "Alan Kay" },
+            { text: "Every expert was once a beginner.", author: "Unknown" },
+            { text: "Code is poetry in motion.", author: "Arthur" },
+            { text: "AI is the new electricity.", author: "Andrew Ng" },
+            { text: "Your limitation—it's only your imagination.", author: "Unknown" },
+            { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+            { text: "Great things never come from comfort zones.", author: "Unknown" },
+            { text: "Dream big. Work hard. Stay focused.", author: "Unknown" }
         ];
+        console.log('📚 Quotes loaded:', this.quotes.length);
     }
 
-    // Fallback quotes if API fails
+    async generateQuote() {
+        console.log('🔄 Generating quote...');
+        const randomIndex = Math.floor(Math.random() * this.quotes.length);
+        const quote = this.quotes[randomIndex];
+        console.log('✅ Quote generated:', quote);
+        return quote;
+    }
+
+    async generateAIQuote(topic = 'AI and innovation') {
+        console.log('🤖 Generating AI quote with topic:', topic);
+        return this.generateQuote();
+    }
+
     getFallbackQuote() {
         return this.quotes[Math.floor(Math.random() * this.quotes.length)];
     }
 
-    async generateQuote(topic = 'coding and AI') {
-        try {
-            // Check cache first
-            const cacheKey = `quote-${topic}`;
-            const cached = this.cache.get(cacheKey);
-            if (cached && Date.now() - cached.timestamp < this.cacheDuration) {
-                return cached.data;
-            }
-
-            // For now, since we're just starting, use a free API
-            // Later we'll upgrade to OpenAI
-            const response = await fetch('https://api.quotable.io/random');
-            if (!response.ok) throw new Error('Quote API failed');
-            
-            const data = await response.json();
-            
-            const quote = {
-                text: data.content,
-                author: data.author,
-                source: 'quotable.io'
-            };
-
-            // Cache the quote
-            this.cache.set(cacheKey, {
-                data: quote,
-                timestamp: Date.now()
-            });
-
-            return quote;
-        } catch (error) {
-            console.error('Quote Error:', error);
-            return {
-                text: this.getFallbackQuote(),
-                author: 'AI Arthur',
-                source: 'fallback'
-            };
-        }
-    }
-
-    async generateAIQuote(topic = 'AI and innovation') {
-        // This will use OpenAI when you get your API key
-        // For now, we'll use a template system
-        const templates = [
-            `In the journey of ${topic}, every line of code writes your future.`,
-            `The ${topic} revolution is not coming - it's already here, and you're part of it.`,
-            `Building ${topic} is like sculpting the future, one algorithm at a time.`,
-            `${topic} is the canvas, and your code is the masterpiece.`
-        ];
-        
-        return {
-            text: templates[Math.floor(Math.random() * templates.length)],
-            author: 'AI Arthur',
-            source: 'inspired'
-        };
-    }
-
     render(containerId) {
+        console.log('🎨 Rendering AI Quote to:', containerId);
         const container = document.getElementById(containerId);
-        if (!container) return;
+        console.log('📦 Container found?', container);
+        
+        if (!container) {
+            console.error('❌ Container not found! ID:', containerId);
+            return;
+        }
 
         container.innerHTML = `
             <div class="ai-quote-container">
@@ -88,7 +49,7 @@ class AIQuoteGenerator {
                         <i class="fas fa-quote-left"></i>
                     </div>
                     <p class="quote-text" id="quoteText">
-                        Loading wisdom from the AI universe...
+                        Loading wisdom...
                     </p>
                     <p class="quote-author" id="quoteAuthor"></p>
                 </div>
@@ -108,30 +69,56 @@ class AIQuoteGenerator {
             </div>
         `;
 
+        console.log('✅ HTML rendered');
+
         // Load initial quote
         this.updateQuote();
 
         // Setup event listeners
-        document.getElementById('newQuoteBtn').addEventListener('click', () => {
-            this.updateQuote();
-        });
+        const newBtn = document.getElementById('newQuoteBtn');
+        const shareBtn = document.getElementById('shareQuoteBtn');
+        
+        console.log('🔘 New Quote button:', newBtn);
+        console.log('🔘 Share button:', shareBtn);
 
-        document.getElementById('shareQuoteBtn').addEventListener('click', () => {
-            this.shareQuote();
-        });
+        if (newBtn) {
+            newBtn.addEventListener('click', () => {
+                console.log('🔄 New quote button clicked');
+                this.updateQuote();
+            });
+        } else {
+            console.error('❌ New Quote button not found!');
+        }
+
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                console.log('📤 Share button clicked');
+                this.shareQuote();
+            });
+        } else {
+            console.error('❌ Share button not found!');
+        }
     }
 
     async updateQuote() {
+        console.log('🔄 Updating quote...');
         const quoteText = document.getElementById('quoteText');
         const quoteAuthor = document.getElementById('quoteAuthor');
         
-        if (!quoteText || !quoteAuthor) return;
+        console.log('📝 Quote text element:', quoteText);
+        console.log('📝 Quote author element:', quoteAuthor);
+        
+        if (!quoteText || !quoteAuthor) {
+            console.error('❌ Quote elements not found!');
+            return;
+        }
 
         quoteText.textContent = '🤔 Generating AI insights...';
         quoteAuthor.textContent = '';
 
         try {
-            const quote = await this.generateAIQuote();
+            const quote = await this.generateQuote();
+            console.log('📖 Got quote:', quote);
             
             // Animate the quote change
             quoteText.style.opacity = '0';
@@ -139,20 +126,25 @@ class AIQuoteGenerator {
                 quoteText.textContent = quote.text;
                 quoteAuthor.textContent = `— ${quote.author}`;
                 quoteText.style.opacity = '1';
+                console.log('✅ Quote displayed!');
             }, 300);
         } catch (error) {
-            quoteText.textContent = this.getFallbackQuote();
-            quoteAuthor.textContent = '— AI Arthur';
+            console.error('❌ Error in updateQuote:', error);
+            const fallback = this.getFallbackQuote();
+            quoteText.textContent = fallback.text;
+            quoteAuthor.textContent = `— ${fallback.author}`;
         }
     }
 
     shareQuote() {
+        console.log('📤 Sharing quote...');
         const quoteText = document.getElementById('quoteText');
         const quoteAuthor = document.getElementById('quoteAuthor');
         
         if (!quoteText || !quoteAuthor) return;
 
         const shareText = `"${quoteText.textContent}" — ${quoteAuthor.textContent}`;
+        console.log('📝 Share text:', shareText);
         
         if (navigator.share) {
             navigator.share({
@@ -161,7 +153,6 @@ class AIQuoteGenerator {
                 url: window.location.href
             }).catch(() => {});
         } else {
-            // Fallback: Copy to clipboard
             navigator.clipboard.writeText(shareText).then(() => {
                 const btn = document.getElementById('shareQuoteBtn');
                 const originalText = btn.innerHTML;

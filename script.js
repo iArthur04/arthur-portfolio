@@ -2,6 +2,7 @@
 import GitHubStats from './js/components/github-stats.js';
 import AIQuoteGenerator from './js/components/ai-quotes.js';
 import SmartContactForm from './js/components/contact-form.js';
+import GitHubContributions from './js/components/github-contributions.js';
 
 // TYPING ANIMATION
 class TypeWriter {
@@ -56,6 +57,101 @@ class TypeWriter {
     }
 }
 
+// THEME TOGGLE
+class ThemeManager {
+    constructor() {
+        this.theme = localStorage.getItem('theme') || 'light';
+        this.toggleButton = document.getElementById('themeToggle');
+        this.icon = this.toggleButton?.querySelector('i');
+        this.init();
+    }
+
+    init() {
+        // Apply saved theme
+        document.documentElement.setAttribute('data-theme', this.theme);
+        this.updateIcon();
+
+        // Add event listener
+        this.toggleButton?.addEventListener('click', () => this.toggle());
+    }
+
+    toggle() {
+        this.theme = this.theme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', this.theme);
+        localStorage.setItem('theme', this.theme);
+        this.updateIcon();
+        
+        // Add animation feedback
+        this.toggleButton.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            this.toggleButton.style.transform = '';
+        }, 300);
+    }
+
+    updateIcon() {
+        if (this.icon) {
+            this.icon.className = this.theme === 'light' 
+                ? 'fas fa-moon' 
+                : 'fas fa-sun';
+        }
+    }
+}
+
+// Initialize theme manager
+const themeManager = new ThemeManager();
+
+// READING PROGRESS BAR
+class ReadingProgress {
+    constructor() {
+        this.progressBar = this.createProgressBar();
+        this.updateProgress = this.updateProgress.bind(this);
+        window.addEventListener('scroll', this.updateProgress);
+    }
+
+    createProgressBar() {
+        const bar = document.createElement('div');
+        bar.id = 'readingProgress';
+        bar.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 9999;
+            width: 0%;
+            transition: width 0.1s ease;
+        `;
+        document.body.appendChild(bar);
+        return bar;
+    }
+
+    updateProgress() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = (scrollTop / scrollHeight) * 100;
+        this.progressBar.style.width = progress + '%';
+    }
+}
+
+// Initialize reading progress
+const readingProgress = new ReadingProgress();
+
+// Add smooth scroll to all internal links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            // Close mobile nav if open
+            document.querySelector('.nav-links')?.classList.remove('active');
+        }
+    });
+});
+
 // Initialize Typing Animation
 document.addEventListener('DOMContentLoaded', () => {
     const typedElement = document.getElementById('typed-text');
@@ -95,6 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. GitHub Stats
     const githubStats = new GitHubStats('iArthur04');
     githubStats.render('githubStatsContainer');
+
+    const contributions = new GitHubContributions('iArthur04');
+    contributions.render('contributionGraph');
 
     // 2. AI Quote Generator
     const aiQuotes = new AIQuoteGenerator();
@@ -178,4 +277,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         lastUpdated.textContent = now.toLocaleDateString('en-US', options);
     }
+});
+
+// Add to script.js
+const scrollTopBtn = document.getElementById('scrollTop');
+
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 500) {
+        scrollTopBtn.classList.add('visible');
+    } else {
+        scrollTopBtn.classList.remove('visible');
+    }
+});
+
+scrollTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
